@@ -1,6 +1,8 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
+import { useParams, useRouter, usePathname } from "next/navigation"
 import {
   ArrowUpCircleIcon,
   BarChartIcon,
@@ -33,124 +35,86 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const params = useParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  
+  // Extract teamId if present in route params
+  const teamId = params?.teamId as string;
+  const basePath = teamId ? `/dashboard/${teamId}` : '';
+  
+  // Build navigation data with dynamic paths
+  const navMainItems = [
     {
       title: "Dashboard",
-      url: "#",
+      url: teamId ? `/dashboard/${teamId}` : "/",
       icon: LayoutDashboardIcon,
     },
     {
       title: "Lifecycle",
-      url: "#",
+      url: `${basePath}/lifecycle`,
       icon: ListIcon,
     },
     {
       title: "Analytics",
-      url: "#",
+      url: `${basePath}/analytics`,
       icon: BarChartIcon,
     },
     {
       title: "Projects",
-      url: "#",
+      url: `${basePath}/projects`,
       icon: FolderIcon,
     },
     {
       title: "Team",
-      url: "#",
+      url: `${basePath}/team`,
       icon: UsersIcon,
     },
-  ],
-  navClouds: [
-    {
-      title: "Capture",
-      icon: CameraIcon,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: FileTextIcon,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: FileCodeIcon,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  navSecondary: [
+  ];
+  
+  const navSecondaryItems = [
     {
       title: "Settings",
-      url: "#",
+      url: `${basePath}/settings`,
       icon: SettingsIcon,
     },
     {
       title: "Get Help",
-      url: "#",
+      url: `${basePath}/help`,
       icon: HelpCircleIcon,
     },
     {
       title: "Search",
-      url: "#",
+      url: `${basePath}/search`,
       icon: SearchIcon,
     },
-  ],
-  documents: [
+  ];
+  
+  const documentItems = [
     {
       name: "Data Library",
-      url: "#",
+      url: `${basePath}/data`,
       icon: DatabaseIcon,
     },
     {
       name: "Reports",
-      url: "#",
+      url: `${basePath}/reports`,
       icon: ClipboardListIcon,
     },
     {
       name: "Word Assistant",
-      url: "#",
+      url: `${basePath}/assistant`,
       icon: FileIcon,
     },
-  ],
-}
+  ];
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const userData = {
+    name: "shadcn",
+    email: "m@example.com",
+    avatar: "/avatars/shadcn.jpg",
+  };
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -160,21 +124,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#">
+              <Link href={teamId ? `/dashboard/${teamId}` : "/"}>
                 <ArrowUpCircleIcon className="h-5 w-5" />
                 <span className="text-base font-semibold">Acme Inc.</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavMain items={navMainItems} />
+        <NavDocuments items={documentItems} />
+        <NavSecondary items={navSecondaryItems} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userData} />
       </SidebarFooter>
     </Sidebar>
   )
