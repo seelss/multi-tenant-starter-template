@@ -1,5 +1,5 @@
 import { AppSidebar } from "@/components/app-sidebar"
-import { DevicesContent } from "@/components/devices/DevicesContent"
+import { DevicesPage } from "@/components/devices/devices-page"
 import {
   SidebarInset,
   SidebarProvider,
@@ -10,7 +10,7 @@ export default function Page() {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <DevicesContent />
+        <DevicesPage />
       </SidebarInset>
     </SidebarProvider>
   )
