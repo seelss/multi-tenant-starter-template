@@ -12,7 +12,11 @@ import {
   PieChart,
   Settings2,
   SquareTerminal,
+  Home,
+  Smartphone,
+  type LucideIcon,
 } from "lucide-react"
+import { useParams, useRouter } from "next/navigation"
 
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
@@ -26,144 +30,144 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 
-// This is sample data.
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  teams: [
+type NavItemBase = {
+  title: string;
+  type: string;
+}
+
+type NavItemFull = NavItemBase & {
+  type: "item";
+  url: string;
+  icon?: LucideIcon;
+  isActive?: boolean;
+}
+
+type NavItemLabel = NavItemBase & {
+  type: "label";
+}
+
+type NavItem = NavItemFull | NavItemLabel;
+
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const params = useParams()
+  const router = useRouter()
+  const teamId = params?.teamId as string
+
+  // Navigation items following the layout.tsxold structure
+  const navigationItems: NavItem[] = [
     {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
+      title: "Overview",
+      url: "/",
+      icon: Home,
+      type: "item",
     },
     {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
+      type: 'label',
+      title: 'Platform',
     },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
-  navMain: [
     {
       title: "Playground",
-      url: "#",
+      url: "/playground",
       icon: SquareTerminal,
+      type: "item",
       isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
     },
     {
       title: "Models",
-      url: "#",
+      url: "/models",
       icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
+      type: "item",
+    },
+    {
+      title: "Devices",
+      url: "/devices",
+      icon: Smartphone,
+      type: "item",
+    },
+    {
+      type: 'label',
+      title: 'Resources',
     },
     {
       title: "Documentation",
-      url: "#",
+      url: "/documentation",
       icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
+      type: "item",
+    },
+    {
+      type: 'label',
+      title: 'Settings',
     },
     {
       title: "Settings",
-      url: "#",
+      url: "/settings",
       icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
+      type: "item",
     },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
-}
+  ]
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  // Sample data for other sidebar elements
+  const data = {
+    user: {
+      name: "shadcn",
+      email: "m@example.com",
+      avatar: "/avatars/shadcn.jpg",
+    },
+    teams: [
+      {
+        name: "Acme Inc",
+        logo: GalleryVerticalEnd,
+        plan: "Enterprise",
+      },
+      {
+        name: "Acme Corp.",
+        logo: AudioWaveform,
+        plan: "Startup",
+      },
+      {
+        name: "Evil Corp.",
+        logo: Command,
+        plan: "Free",
+      },
+    ],
+    projects: [
+      {
+        name: "Design Engineering",
+        url: "/projects/design",
+        icon: Frame,
+      },
+      {
+        name: "Sales & Marketing",
+        url: "/projects/sales",
+        icon: PieChart,
+      },
+      {
+        name: "Travel",
+        url: "/projects/travel",
+        icon: Map,
+      },
+    ],
+  }
+
+  const handleNavigation = (url: string) => {
+    if (teamId) {
+      router.push(`/dashboard/${teamId}${url}`)
+    } else {
+      router.push(url)
+    }
+  }
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain 
+          items={navigationItems} 
+          basePath={teamId ? `/dashboard/${teamId}` : ""} 
+          onNavigate={handleNavigation}
+        />
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
