@@ -66,7 +66,7 @@ class DeviceDetector:
                         connected_device_ids.add(device_info['device_id'])
                         
                         if created:
-                            logger.info(f"New device detected: {device_info['manufacturer']} {device_info['name']}")
+                            logger.info(f"New device detected: {device_info['manufacturer']} {device_info['name']} at {device_info['port_location']}")
             
             # Mark devices no longer connected as disconnected
             Device.objects.filter(is_connected=True).exclude(device_id__in=connected_device_ids).update(
