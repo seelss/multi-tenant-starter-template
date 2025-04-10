@@ -20,7 +20,7 @@ export function DeviceCard({ device }: DeviceCardProps) {
               <DeviceIcon className={`h-5 w-5 ${device.status === "online" ? "text-green-600" : "text-gray-500"}`} />
             </div>
             <div>
-              <h3 className="font-medium">{device.name}</h3>
+              <h3 className="font-medium">{device.model}</h3>
               <p className="text-sm text-muted-foreground">{device.type}</p>
             </div>
           </div>
@@ -30,10 +30,32 @@ export function DeviceCard({ device }: DeviceCardProps) {
       <CardContent>
         <div className="text-sm">
           <div className="grid grid-cols-2 gap-2">
-            <div className="text-muted-foreground">IP Address</div>
-            <div className="text-right">{device.ipAddress}</div>
-            <div className="text-muted-foreground">MAC Address</div>
-            <div className="text-right">{device.macAddress}</div>
+            <div className="text-muted-foreground">Storage</div>
+            <div className="text-right">{device.storage}</div>
+            <div className="text-muted-foreground">Color</div>
+            <div className="text-right">{device.color}</div>
+            <div className="text-muted-foreground">IMEI</div>
+            <div className="text-right">{device.imei}</div>
+            <div className="text-muted-foreground">Serial Number</div>
+            <div className="text-right">{device.serialNumber}</div>
+            <div className="text-muted-foreground">Battery Health</div>
+            <div className="text-right">{device.batteryHealth}</div>
+            <div className="text-muted-foreground">iOS Version</div>
+            <div className="text-right">{device.iosVersion}</div>
+            <div className="text-muted-foreground">Activation</div>
+            <div className="text-right">
+              <Badge variant={device.activationStatus === "Activated" ? "default" : "outline"}>
+                {device.activationStatus}
+              </Badge>
+            </div>
+            <div className="text-muted-foreground">Find My</div>
+            <div className="text-right">
+              <Badge variant={device.findMyStatus === "On" ? "default" : "outline"}>
+                {device.findMyStatus}
+              </Badge>
+            </div>
+            <div className="text-muted-foreground">Region</div>
+            <div className="text-right">{device.region}</div>
           </div>
         </div>
       </CardContent>

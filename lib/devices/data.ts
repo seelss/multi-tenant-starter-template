@@ -4,75 +4,67 @@ export function getDevices(): Device[] {
   return [
     {
       id: "1",
-      name: "iPhone 13 Pro",
       type: "smartphone",
       status: "online",
-      ipAddress: "192.168.1.101",
-      macAddress: "00:1B:44:11:3A:B7",
       lastConnected: new Date(Date.now() - 5 * 60 * 1000).toISOString(), // 5 minutes ago
+      model: "iPhone 13 Pro",
+      storage: "256GB",
+      color: "Sierra Blue",
+      imei: "123456789012345",
+      serialNumber: "C02X12345678",
+      batteryHealth: "98%",
+      iosVersion: "16.4.1",
+      activationStatus: "Activated",
+      findMyStatus: "On",
+      region: "US"
     },
     {
       id: "2",
-      name: "MacBook Pro",
-      type: "laptop",
+      type: "smartphone",
       status: "online",
-      ipAddress: "192.168.1.102",
-      macAddress: "00:1B:44:11:3A:B8",
       lastConnected: new Date(Date.now() - 15 * 60 * 1000).toISOString(), // 15 minutes ago
+      model: "iPhone 14 Pro Max",
+      storage: "512GB",
+      color: "Deep Purple",
+      imei: "987654321098765",
+      serialNumber: "C02X98765432",
+      batteryHealth: "95%",
+      iosVersion: "16.5",
+      activationStatus: "Activated",
+      findMyStatus: "On",
+      region: "US"
     },
     {
       id: "3",
-      name: "iPad Air",
-      type: "tablet",
+      type: "smartphone",
       status: "sleep",
-      ipAddress: "192.168.1.103",
-      macAddress: "00:1B:44:11:3A:B9",
       lastConnected: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(), // 3 hours ago
+      model: "iPhone 12",
+      storage: "128GB",
+      color: "Black",
+      imei: "456789123456789",
+      serialNumber: "C02X45678912",
+      batteryHealth: "87%",
+      iosVersion: "16.3.1",
+      activationStatus: "Activated",
+      findMyStatus: "Off",
+      region: "EU"
     },
     {
       id: "4",
-      name: "Desktop PC",
-      type: "desktop",
+      type: "smartphone",
       status: "offline",
-      ipAddress: "192.168.1.104",
-      macAddress: "00:1B:44:11:3A:C0",
       lastConnected: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
-    },
-    {
-      id: "5",
-      name: "Apple Watch",
-      type: "smartwatch",
-      status: "online",
-      ipAddress: "192.168.1.105",
-      macAddress: "00:1B:44:11:3A:C1",
-      lastConnected: new Date(Date.now() - 30 * 60 * 1000).toISOString(), // 30 minutes ago
-    },
-    {
-      id: "6",
-      name: "Samsung Smart TV",
-      type: "tv",
-      status: "offline",
-      ipAddress: "192.168.1.106",
-      macAddress: "00:1B:44:11:3A:C2",
-      lastConnected: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days ago
-    },
-    {
-      id: "7",
-      name: "Android Tablet",
-      type: "tablet",
-      status: "error",
-      ipAddress: "192.168.1.107",
-      macAddress: "00:1B:44:11:3A:C3",
-      lastConnected: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(), // 12 hours ago
-    },
-    {
-      id: "8",
-      name: "Work Laptop",
-      type: "laptop",
-      status: "online",
-      ipAddress: "192.168.1.108",
-      macAddress: "00:1B:44:11:3A:C4",
-      lastConnected: new Date(Date.now() - 45 * 60 * 1000).toISOString(), // 45 minutes ago
-    },
+      model: "iPhone 13",
+      storage: "128GB",
+      color: "Pink",
+      imei: "789123456789123",
+      serialNumber: "C02X78912345",
+      batteryHealth: "92%",
+      iosVersion: "16.4",
+      activationStatus: "Not Activated",
+      findMyStatus: "Off",
+      region: "AS"
+    }
   ]
 }
