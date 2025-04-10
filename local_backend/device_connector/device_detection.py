@@ -68,8 +68,15 @@ class DeviceDetector:
                         if created:
                             logger.info(f"New device detected: {device_info['manufacturer']} {device_info['name']} at {device_info['port_location']}")
             
+            # Get previously connected devices that are no longer connected
+            disconnected_devices = Device.objects.filter(is_connected=True).exclude(device_id__in=connected_device_ids)
+            
+            # Log disconnection events
+            for device in disconnected_devices:
+                logger.info(f"Device disconnected: {device.manufacturer} {device.name} from {device.port_location}")
+            
             # Mark devices no longer connected as disconnected
-            Device.objects.filter(is_connected=True).exclude(device_id__in=connected_device_ids).update(
+            disconnected_devices.update(
                 is_connected=False,
                 last_seen=timezone.now()
             )
@@ -94,4 +101,4 @@ class DeviceDetector:
                 break
             except Exception as e:
                 logger.error(f"Error in polling loop: {str(e)}")
-                time.sleep(interval) 
+                time.sleep(interval)
