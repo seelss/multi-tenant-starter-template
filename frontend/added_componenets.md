@@ -11,3 +11,7 @@ https://ui.shadcn.com/docs/components/context-menu
 
 https://ui.aceternity.com/components/multi-step-loader
 can be used for long uplading events or llm chains that take a while
+
+
+https://rauno.me/craft
+inspo
