@@ -3,8 +3,6 @@ import usb.util
 import logging
 import time
 from datetime import datetime
-from django.utils import timezone
-from .models import Device
 
 logger = logging.getLogger(__name__)
 
@@ -13,6 +11,9 @@ APPLE_VENDOR_ID = 0x05ac
 
 class DeviceDetector:
     """Service for detecting and managing connected devices"""
+    
+    # Track connected devices in memory
+    connected_devices = {}
     
     @staticmethod
     def get_device_info(device):
@@ -39,8 +40,8 @@ class DeviceDetector:
     
     @classmethod
     def scan_devices(cls):
-        """Scan for all connected USB devices and update the database"""
-        connected_device_ids = set()
+        """Scan for all connected USB devices and track in memory"""
+        currently_connected = {}
         
         # Find all connected devices
         try:
@@ -51,37 +52,24 @@ class DeviceDetector:
                 if device.idVendor == APPLE_VENDOR_ID:
                     device_info = cls.get_device_info(device)
                     if device_info:
-                        # Update or create device in database
-                        device_obj, created = Device.objects.update_or_create(
-                            device_id=device_info['device_id'],
-                            defaults={
-                                'manufacturer': device_info['manufacturer'],
-                                'name': device_info['name'],
-                                'port_location': device_info['port_location'],
-                                'is_connected': True,
-                                'last_seen': timezone.now()
-                            }
-                        )
+                        device_id = device_info['device_id']
+                        currently_connected[device_id] = device_info
                         
-                        connected_device_ids.add(device_info['device_id'])
-                        
-                        if created:
+                        # Check if this is a new device
+                        if device_id not in cls.connected_devices:
                             logger.info(f"New device detected: {device_info['manufacturer']} {device_info['name']} at {device_info['port_location']}")
             
-            # Get previously connected devices that are no longer connected
-            disconnected_devices = Device.objects.filter(is_connected=True).exclude(device_id__in=connected_device_ids)
+            # Check for disconnected devices
+            for device_id in list(cls.connected_devices.keys()):
+                if device_id not in currently_connected:
+                    disconnected_device = cls.connected_devices[device_id]
+                    logger.info(f"Device disconnected: {disconnected_device['manufacturer']} {disconnected_device['name']} from {disconnected_device['port_location']}")
+                    del cls.connected_devices[device_id]
             
-            # Log disconnection events
-            for device in disconnected_devices:
-                logger.info(f"Device disconnected: {device.manufacturer} {device.name} from {device.port_location}")
+            # Update connected devices list
+            cls.connected_devices = currently_connected
             
-            # Mark devices no longer connected as disconnected
-            disconnected_devices.update(
-                is_connected=False,
-                last_seen=timezone.now()
-            )
-            
-            return Device.objects.filter(is_connected=True)
+            return list(cls.connected_devices.values())
             
         except Exception as e:
             logger.error(f"Error scanning devices: {str(e)}")
