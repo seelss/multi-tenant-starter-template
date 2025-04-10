@@ -35,3 +35,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+/local_backend/device_connector/migrations/__pycache__
+*.pyc
+local_backend/device_polling.log
+local_backend/db.sqlite3
