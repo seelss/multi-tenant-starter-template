@@ -50,6 +50,18 @@ In another terminal window, start the Celery beat scheduler:
 celery -A core beat --loglevel=info
 ```
 
+To see open celery processes
+
+```bash
+ps aux | grep celery
+```
+
+To view logs
+
+```bash
+tail -f logs/*.log
+```
+
 ## How It Works
 
 1. The Celery beat scheduler triggers the `poll_for_devices` task at the specified interval

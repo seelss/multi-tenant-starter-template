@@ -145,15 +145,46 @@ CELERYD_LOG_LEVEL = 'WARNING'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} {levelname} {module} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': 'logs/django.log',
+            'formatter': 'verbose',
+        },
+        'device_file': {
+            'class': 'logging.FileHandler',
+            'filename': 'logs/devices.log',
+            'formatter': 'verbose',
         },
     },
     'loggers': {
-        'celery': {
-            'handlers': ['console'],
-            'level': 'WARNING',
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': True,
         },
+        'celery': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+        },
+        'device_connector': {
+            'handlers': ['console', 'device_file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+    'root': {
+        'handlers': ['console', 'file'],
+        'level': 'INFO',
     },
 }

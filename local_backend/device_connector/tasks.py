@@ -27,13 +27,11 @@ def poll_for_devices(self):
         
         # Only log if there's a change in devices
         if devices != last_device_state:
-            # Comment out all logging for now to reduce console clutter
-            # Uncomment for debugging if needed
-            """
+            # Uncommented logging to properly track device changes
             if last_device_state is None:
                 logger.info(f"Initial device scan completed. Found {len(devices)} Apple devices.")
             else:
-                old_count = len(last_device_state)
+                old_count = len(last_device_state) if last_device_state else 0
                 new_count = len(devices)
                 if new_count > old_count:
                     logger.info(f"New device(s) detected. Total devices: {new_count}")
@@ -41,7 +39,6 @@ def poll_for_devices(self):
                     logger.info(f"Device(s) disconnected. Total devices: {new_count}")
                 else:
                     logger.info("Device configuration changed")
-            """
             
             last_device_state = devices
             
@@ -51,11 +48,10 @@ def poll_for_devices(self):
             'devices_found': len(devices),
         }
     except SoftTimeLimitExceeded:
-        # Comment out for now, uncomment for debugging
-        # logger.warning("Device polling task exceeded time limit")
+        logger.warning("Device polling task exceeded time limit")
         raise self.retry(countdown=60)  # Retry after 1 minute
     except Exception as e:
-        # Only log critical errors
+        # Log all errors
         logger.error(f"Error in device polling task: {str(e)}")
         return {
             'success': False,
