@@ -52,13 +52,16 @@ class DeviceDetector:
                 if device.idVendor == APPLE_VENDOR_ID:
                     device_info = cls.get_device_info(device)
                     if device_info:
-                        device_id = device_info['device_id']
-                        currently_connected[device_id] = device_info
-                        
-                        # Check if this is a new device
-                        if device_id not in cls.connected_devices:
-                            # Log new device connection with details
-                            logger.info(f"New device connected: {device_info}")
+                        # Only include iPhone and iPad devices
+                        device_name = device_info['name']
+                        if 'iPhone' in device_name or 'iPad' in device_name:
+                            device_id = device_info['device_id']
+                            currently_connected[device_id] = device_info
+                            
+                            # Check if this is a new device
+                            if device_id not in cls.connected_devices:
+                                # Log new device connection with details
+                                logger.info(f"New device connected: {device_info}")
             
             # Check for disconnected devices
             for device_id in list(cls.connected_devices.keys()):
