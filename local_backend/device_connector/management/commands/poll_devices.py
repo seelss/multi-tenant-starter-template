@@ -9,7 +9,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '--interval',
             type=int,
-            default=5,
+            default=1,
             help='Polling interval in seconds'
         )
 

@@ -76,7 +76,7 @@ class DeviceDetector:
             return []
 
     @classmethod
-    def start_polling(cls, interval=5):
+    def start_polling(cls, interval=1):
         """Start polling for device connections at regular intervals"""
         logger.info(f"Starting device polling with interval of {interval} seconds")
         while True:

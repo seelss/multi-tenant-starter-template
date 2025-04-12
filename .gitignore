@@ -39,3 +39,4 @@ next-env.d.ts
 *.pyc
 local_backend/device_polling.log
 local_backend/db.sqlite3
+/local_backend/venv
