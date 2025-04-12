@@ -175,7 +175,7 @@ LOGGING = {
         },
         'celery': {
             'handlers': ['console', 'file'],
-            'level': 'INFO',
+            'level': 'WARNING',
         },
         'device_connector': {
             'handlers': ['console', 'device_file'],
