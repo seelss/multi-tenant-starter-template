@@ -22,8 +22,18 @@ class DeviceDetector:
             manufacturer = usb.util.get_string(device, device.iManufacturer) if device.iManufacturer else "Unknown"
             product = usb.util.get_string(device, device.iProduct) if device.iProduct else "Unknown"
             
-            # Generate a unique identifier
-            device_id = f"{device.idVendor:04x}:{device.idProduct:04x}-{device.bus}-{device.address}"
+            # Get the serial number as device_id
+            if not device.iSerialNumber:
+                logger.error(f"No serial number available for device {product}")
+                return None
+                
+            serial = usb.util.get_string(device, device.iSerialNumber)
+            if not serial:
+                logger.error(f"Failed to retrieve serial number for device {product}")
+                return None
+                
+            # Strip null characters and any whitespace
+            device_id = serial.strip().split('\0')[0]
             
             # Port location
             port_location = f"Bus {device.bus}, Port {device.port_numbers}" if hasattr(device, 'port_numbers') else f"Bus {device.bus}, Address {device.address}"
