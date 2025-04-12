@@ -41,13 +41,13 @@ This sets up a periodic task to run every 1 second. You can adjust the interval 
 In one terminal window, start the Celery worker:
 
 ```bash
-celery -A device_manager worker --loglevel=info
+celery -A core worker --loglevel=info
 ```
 
 In another terminal window, start the Celery beat scheduler:
 
 ```bash
-celery -A device_manager beat --loglevel=info
+celery -A core beat --loglevel=info
 ```
 
 ## How It Works
