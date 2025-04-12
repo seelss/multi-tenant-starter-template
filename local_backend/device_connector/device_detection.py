@@ -57,13 +57,14 @@ class DeviceDetector:
                         
                         # Check if this is a new device
                         if device_id not in cls.connected_devices:
-                            logger.info(f"New device detected: {device_info['manufacturer']} {device_info['name']} at {device_info['port_location']}")
+                            # Log new device connection with details
+                            logger.info(f"New device connected: {device_info}")
             
             # Check for disconnected devices
             for device_id in list(cls.connected_devices.keys()):
                 if device_id not in currently_connected:
-                    disconnected_device = cls.connected_devices[device_id]
-                    logger.info(f"Device disconnected: {disconnected_device['manufacturer']} {disconnected_device['name']} from {disconnected_device['port_location']}")
+                    # Log device disconnection with details
+                    logger.info(f"Device disconnected: {cls.connected_devices[device_id]}")
                     del cls.connected_devices[device_id]
             
             # Update connected devices list
@@ -82,7 +83,7 @@ class DeviceDetector:
         while True:
             try:
                 devices = cls.scan_devices()
-                logger.debug(f"Found {len(devices)} connected devices")
+                logger.debug(f"Found {len(devices)} connected devices: {devices}")
                 time.sleep(interval)
             except KeyboardInterrupt:
                 logger.info("Device polling stopped by user")

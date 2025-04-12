@@ -40,10 +40,10 @@ def poll_for_devices(self):
             
             last_device_state = devices
             
+        # Return summary instead of the full list
         return {
             'success': True,
             'devices_found': len(devices),
-            'device_list': devices
         }
     except SoftTimeLimitExceeded:
         logger.warning("Device polling task exceeded time limit")
