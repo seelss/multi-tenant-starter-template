@@ -12,7 +12,7 @@ last_device_state = None
     bind=True,
     soft_time_limit=30,  # 30 second timeout
     max_retries=3,       # Retry up to 3 times
-    rate_limit='1/5s'    # Only allow one execution per 5 seconds
+    rate_limit='5'   
 )
 def poll_for_devices(self):
     """
