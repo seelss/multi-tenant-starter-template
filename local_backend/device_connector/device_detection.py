@@ -35,14 +35,17 @@ class DeviceDetector:
             # Strip null characters and any whitespace
             device_id = serial.strip().split('\0')[0]
             
-            # Port location
-            port_location = f"Bus {device.bus}, Port {device.port_numbers}" if hasattr(device, 'port_numbers') else f"Bus {device.bus}, Address {device.address}"
+            # Port location - simple static identifier
+            if hasattr(device, 'port_numbers'):
+                port_id = f"b{device.bus}_p{'_'.join([str(p) for p in device.port_numbers])}"
+            else:
+                port_id = f"b{device.bus}_a{device.address}"
             
             return {
                 'manufacturer': manufacturer,
                 'name': product,
                 'device_id': device_id,
-                'port_location': port_location
+                'port_location': port_id
             }
         except Exception as e:
             logger.error(f"Error extracting device info: {str(e)}")
