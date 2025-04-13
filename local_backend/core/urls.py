@@ -19,4 +19,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('device_connector.urls')),
+    path('api/device-info/', include('device_info.urls')),
 ]

@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'device_connector',
+    'device_info',
     'django_celery_beat',
 ]
 
@@ -178,6 +179,11 @@ LOGGING = {
             'level': 'WARNING',
         },
         'device_connector': {
+            'handlers': ['console', 'device_file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'device_info': {
             'handlers': ['console', 'device_file'],
             'level': 'DEBUG',
             'propagate': False,

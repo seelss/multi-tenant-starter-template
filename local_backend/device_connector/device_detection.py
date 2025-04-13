@@ -3,11 +3,16 @@ import usb.util
 import logging
 import time
 from datetime import datetime
+from core.events import EventSystem
 
 logger = logging.getLogger(__name__)
 
 # Apple's Vendor ID
 APPLE_VENDOR_ID = 0x05ac
+
+# Define event types
+DEVICE_CONNECTED = 'device_connected'
+DEVICE_DISCONNECTED = 'device_disconnected'
 
 class DeviceDetector:
     """Service for detecting and managing connected devices"""
@@ -75,12 +80,17 @@ class DeviceDetector:
                             if device_id not in cls.connected_devices:
                                 # Log new device connection with details
                                 logger.info(f"New device connected: {device_info}")
+                                # Emit device connected event
+                                EventSystem.publish(DEVICE_CONNECTED, device_info)
             
             # Check for disconnected devices
             for device_id in list(cls.connected_devices.keys()):
                 if device_id not in currently_connected:
                     # Log device disconnection with details
-                    logger.info(f"Device disconnected: {cls.connected_devices[device_id]}")
+                    disconnected_device = cls.connected_devices[device_id]
+                    logger.info(f"Device disconnected: {disconnected_device}")
+                    # Emit device disconnected event
+                    EventSystem.publish(DEVICE_DISCONNECTED, disconnected_device)
                     del cls.connected_devices[device_id]
             
             # Update connected devices list
