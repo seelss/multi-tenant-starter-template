@@ -1,11 +1,14 @@
 import logging
 import random
 from django.utils import timezone
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 from core.events import EventSystem
 from device_connector.device_detection import DEVICE_CONNECTED, DEVICE_DISCONNECTED
 from .models import DeviceInfo
 
 logger = logging.getLogger(__name__)
+channel_layer = get_channel_layer()
 
 class DeviceInfoService:
     """Service for collecting and managing additional device information"""
@@ -117,6 +120,20 @@ class DeviceInfoService:
             )
             
             logger.info(f"{'Created' if created else 'Updated'} device info for {device_id}: {sample_info}")
+            
+            # Broadcast device info update to all clients via WebSocket
+            try:
+                async_to_sync(channel_layer.group_send)(
+                    "device_updates",
+                    {
+                        "type": "device_list_update",
+                        "action": "device_info_updated",
+                        "device_id": device_id
+                    }
+                )
+                logger.info(f"Sent device info update notification for {device_id}")
+            except Exception as e:
+                logger.error(f"Error broadcasting device info update: {str(e)}")
             
             return device_info_obj
             

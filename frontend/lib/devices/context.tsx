@@ -30,12 +30,27 @@ export const DeviceProvider: React.FC<DeviceProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isConnected, setIsConnected] = useState(false);
   
+  // Function to manually refresh devices
+  const refreshDevices = () => {
+    setIsLoading(true);
+    deviceWebSocketService.requestDevices();
+  };
+  
   // Initialize WebSocket connection
   useEffect(() => {
     // Handle device list updates
-    const unsubscribeDevices = deviceWebSocketService.onDevicesUpdate((deviceList) => {
-      setDevices(deviceList);
-      setIsLoading(false);
+    const unsubscribeDevices = deviceWebSocketService.onDevicesUpdate((deviceList, action) => {
+      console.log('Received device update:', action, deviceList);
+      
+      if (action === 'device_info_updated') {
+        // If this is a device_info_updated action, we want to ensure we have the latest data
+        console.log('Device info updated, refreshing device list');
+        refreshDevices();
+      } else {
+        // Regular device list update
+        setDevices(deviceList);
+        setIsLoading(false);
+      }
     });
     
     // Handle individual device updates
@@ -58,6 +73,8 @@ export const DeviceProvider: React.FC<DeviceProviderProps> = ({ children }) => {
     // Handle connection status
     const unsubscribeConnect = deviceWebSocketService.onConnect(() => {
       setIsConnected(true);
+      // Request initial device list on connection
+      refreshDevices();
     });
     
     const unsubscribeDisconnect = deviceWebSocketService.onDisconnect(() => {
@@ -76,12 +93,6 @@ export const DeviceProvider: React.FC<DeviceProviderProps> = ({ children }) => {
       deviceWebSocketService.disconnect();
     };
   }, []);
-  
-  // Function to manually refresh devices
-  const refreshDevices = () => {
-    setIsLoading(true);
-    deviceWebSocketService.requestDevices();
-  };
   
   return (
     <DeviceContext.Provider value={{ devices, isLoading, isConnected, refreshDevices }}>

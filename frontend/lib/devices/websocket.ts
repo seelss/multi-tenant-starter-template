@@ -5,6 +5,7 @@ import type { Device } from './types';
 type DeviceListEvent = {
   type: 'device_list';
   devices: Device[];
+  action?: string;
 };
 
 type DeviceUpdateEvent = {
@@ -15,7 +16,7 @@ type DeviceUpdateEvent = {
 type WebSocketEvent = DeviceListEvent | DeviceUpdateEvent;
 
 // Callback types
-type DevicesCallback = (devices: Device[]) => void;
+type DevicesCallback = (devices: Device[], action?: string) => void;
 type DeviceCallback = (device: Device) => void;
 
 /**
@@ -145,7 +146,7 @@ export class DeviceWebSocketService {
       
       switch (data.type) {
         case 'device_list':
-          this.onDevicesUpdateCallbacks.forEach(callback => callback(data.devices));
+          this.onDevicesUpdateCallbacks.forEach(callback => callback(data.devices, data.action));
           break;
         case 'device_update':
           this.onDeviceUpdateCallbacks.forEach(callback => callback(data.device));

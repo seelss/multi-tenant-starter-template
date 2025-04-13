@@ -58,10 +58,16 @@ class DeviceConsumer(AsyncWebsocketConsumer):
     async def device_list_update(self, event):
         """Send updated device list to the client"""
         devices = await self.get_connected_devices()
-        await self.send(text_data=json.dumps({
+        response = {
             'type': 'device_list',
             'devices': devices
-        }))
+        }
+        
+        # Include action from the event if present
+        if 'action' in event:
+            response['action'] = event['action']
+            
+        await self.send(text_data=json.dumps(response))
     
     @database_sync_to_async
     def get_connected_devices(self):
