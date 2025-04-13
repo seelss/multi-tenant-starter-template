@@ -1,20 +1,22 @@
+"use client"
+
 import { AppSidebar } from "@/components/app-sidebar"
 import { DevicesPage } from "@/components/devices/devices-page"
-import { getDevices } from "@/lib/devices/data"
+import { DeviceProvider } from "@/lib/devices/context"
 import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar"
 
 export default function Page() {
-  const devices = getDevices()
-  
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <DevicesPage devices={devices} />
-      </SidebarInset>
-    </SidebarProvider>
+    <DeviceProvider>
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>
+          <DevicesPage />
+        </SidebarInset>
+      </SidebarProvider>
+    </DeviceProvider>
   )
 }

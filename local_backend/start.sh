@@ -18,5 +18,5 @@ celery -A core beat -l info --scheduler django_celery_beat.schedulers:DatabaseSc
 echo "Setting up Celery tasks for device detection..."
 python manage.py setup_celery_tasks --interval 1
 
-echo "Starting Django server with real-time device logging..."
-python manage.py runserver 0.0.0.0:8002 --verbosity 3
+echo "Starting Daphne ASGI server with WebSocket support..."
+daphne -b 0.0.0.0 -p 8002 core.asgi:application

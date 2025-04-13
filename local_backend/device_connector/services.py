@@ -1,10 +1,13 @@
 import logging
 from django.utils import timezone
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 from core.events import EventSystem
 from device_connector.device_detection import DEVICE_CONNECTED, DEVICE_DISCONNECTED
 from .models import Device
 
 logger = logging.getLogger(__name__)
+channel_layer = get_channel_layer()
 
 class DeviceConnectionService:
     """Service for managing device connection state in the database"""
@@ -37,6 +40,19 @@ class DeviceConnectionService:
             logger.info(f"Added new device to database: {device}")
         else:
             logger.info(f"Updated existing device in database: {device}")
+            
+        # Broadcast device list update to all clients via WebSocket
+        try:
+            async_to_sync(channel_layer.group_send)(
+                "device_updates",
+                {
+                    "type": "device_list_update",
+                    "action": "connected",
+                    "device_id": device_info['device_id']
+                }
+            )
+        except Exception as e:
+            logger.error(f"Error broadcasting device connected event: {str(e)}")
     
     @classmethod
     def handle_device_disconnected(cls, device_info):
@@ -51,5 +67,19 @@ class DeviceConnectionService:
             device.last_seen = timezone.now()
             device.save()
             logger.info(f"Marked device as disconnected in database: {device}")
+            
+            # Broadcast device list update to all clients via WebSocket
+            try:
+                async_to_sync(channel_layer.group_send)(
+                    "device_updates",
+                    {
+                        "type": "device_list_update",
+                        "action": "disconnected",
+                        "device_id": device_id
+                    }
+                )
+            except Exception as e:
+                logger.error(f"Error broadcasting device disconnected event: {str(e)}")
+                
         except Device.DoesNotExist:
             logger.error(f"Tried to mark device {device_id} as disconnected, but it doesn't exist in database") 
