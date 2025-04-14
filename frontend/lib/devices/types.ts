@@ -15,6 +15,7 @@ export interface Device {
   batteryHealth: string
   iosVersion: string
   activationStatus: "Activated" | "Not Activated"
-  findMyStatus: "On" | "Off"
+  findMyStatus: "on" | "off"
   region: string
+  region_info_human_readable?: string
 }

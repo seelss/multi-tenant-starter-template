@@ -78,7 +78,7 @@ export function DeviceCard({ device }: DeviceCardProps) {
                 <span className="text-xs text-muted-foreground">Find My</span>
               </div>
               <div className="font-medium">
-                {device.findMyStatus === "On" ? (
+                {device.findMyStatus === "on" ? (
                   <span className="text-green-500">On</span>
                 ) : (
                   <span className="text-red-500">Off</span>
@@ -91,7 +91,7 @@ export function DeviceCard({ device }: DeviceCardProps) {
                 <Globe className="h-3.5 w-3.5 text-primary" />
                 <span className="text-xs text-muted-foreground">Region</span>
               </div>
-              <div className="font-medium">{device.region}</div>
+              <div className="font-medium">{device.region_info_human_readable}</div>
             </div>
           </div>
         </div>

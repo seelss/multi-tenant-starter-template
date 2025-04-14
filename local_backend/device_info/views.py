@@ -11,7 +11,7 @@ def device_info_list(request):
     """Return a list of all devices with their additional info"""
     devices = list(DeviceInfo.objects.values(
         'device_id', 'imei', 'serial_number', 'product_type', 'model_number',
-        'region_info', 'ios_version', 'model_name', 'storage_capacity',
+        'region_info', 'region_info_human_readable', 'ios_version', 'model_name', 'storage_capacity',
         'activation_state', 'findmy_status', 'housing_color',
         'battery_level', 'storage_total', 'storage_used', 'last_updated'
     ))

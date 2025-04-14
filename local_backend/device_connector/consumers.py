@@ -103,6 +103,7 @@ class DeviceConsumer(AsyncWebsocketConsumer):
                     'activationStatus': device_info.activation_state or 'Unknown',
                     'findMyStatus': device_info.findmy_status or 'Unknown',
                     'region': device_info.region_info or 'Loading...',
+                    'region_info_human_readable': device_info.region_info_human_readable or 'Unknown',
                 })
             except DeviceInfo.DoesNotExist:
                 # Fill with default values if no additional info is available
@@ -116,6 +117,7 @@ class DeviceConsumer(AsyncWebsocketConsumer):
                     'activationStatus': 'Unknown',
                     'findMyStatus': 'Unknown',
                     'region': 'Unknown',
+                    'region_info_human_readable': 'Unknown',
                 })
             
             devices.append(device_data)
