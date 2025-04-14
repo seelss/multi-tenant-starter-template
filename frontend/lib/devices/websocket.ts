@@ -27,7 +27,7 @@ export class DeviceWebSocketService {
   private isConnected = false;
   private reconnectTimeout: NodeJS.Timeout | null = null;
   private reconnectAttempts = 0;
-  private maxReconnectAttempts = 5;
+  private maxReconnectAttempts = 3;
   private reconnectInterval = 3000; // 3 seconds
   
   // Callbacks
