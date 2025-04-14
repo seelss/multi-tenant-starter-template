@@ -96,13 +96,13 @@ class DeviceConsumer(AsyncWebsocketConsumer):
                     'model': device_info.model_name or device_info.product_type or device.name,
                     'storage': device_info.storage_capacity or 'Unknown',
                     'color': device_info.housing_color or 'Unknown',
-                    'imei': device_info.imei or 'Unknown',
-                    'serialNumber': device_info.serial_number or 'Unknown',
+                    'imei': device_info.imei or 'Loading...',
+                    'serialNumber': device_info.serial_number or 'Loading...',
                     'batteryHealth': f"{device_info.battery_level}%" if device_info.battery_level else 'Unknown',
                     'iosVersion': device_info.ios_version or 'Unknown',
                     'activationStatus': device_info.activation_state or 'Unknown',
                     'findMyStatus': device_info.findmy_status or 'Unknown',
-                    'region': device_info.region_info or 'Unknown',
+                    'region': device_info.region_info or 'Loading...',
                 })
             except DeviceInfo.DoesNotExist:
                 # Fill with default values if no additional info is available
