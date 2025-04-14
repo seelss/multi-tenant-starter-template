@@ -1,0 +1,18 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Your rule content
+
+We are building a enterprise ready phone diagnostic automation tool.  Things like this take a while to build, so I am slowly adding stuff over time.  It is very importnant to remember the following:
+- Never add unnecessary files or code
+- Make sure everything is modular and sectional
+- Always use best coding practices
+- If there is any uncertainity, ask for clarification.  Design things with the knowledge that more features will be added later.
+
+
+
+
+I also already have a venv in the local_backend/venv folder

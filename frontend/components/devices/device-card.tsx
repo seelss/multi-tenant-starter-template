@@ -2,7 +2,7 @@ import { formatDistanceToNow } from "date-fns"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Battery, Globe, CheckCircle, MapPin, Settings, RefreshCw, Stethoscope, Trash2 } from "lucide-react"
+import { Battery, Globe, CheckCircle, MapPin, Settings, RefreshCw, Play } from "lucide-react"
 import { getDeviceIcon } from "@/lib/devices/utils"
 import type { Device } from "@/lib/devices/types"
 
@@ -104,11 +104,11 @@ export function DeviceCard({ device }: DeviceCardProps) {
         </Button>
         <Button variant="outline" size="sm" className="flex items-center gap-1">
           <RefreshCw className="h-4 w-4" />
-          Retry
+          Rescan
         </Button>
         <Button variant="outline" size="sm" className="flex items-center gap-1">
-          <Stethoscope className="h-4 w-4" />
-          Diagnose
+          <Play className="h-4 w-4" />
+          Run Diag.
         </Button>
       </CardFooter>
     </Card>
