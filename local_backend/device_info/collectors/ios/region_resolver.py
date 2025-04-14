@@ -47,20 +47,22 @@ class RegionResolver:
         """Resolve human-readable region name from region code.
         
         Args:
-            region_code: The region code (e.g., "A" or "LL/A")
+            region_code: The region code (e.g., "LL/A" or "A")
             
         Returns:
             Human-readable region name
         """
-        # Extract the region code from model number format if needed (e.g., "LL/A" -> "A")
+        original_code = region_code
+        
+        # Extract the region code from model number format (e.g., "LL/A" -> "LL")
         if '/' in region_code:
             parts = region_code.split('/')
-            if len(parts) > 1:
-                region_code = parts[1]
+            if len(parts) > 0:
+                region_code = parts[0]  # Use the part before the slash
         
         if region_code in self.region_mappings:
-            logger.info(f"Found mapping for region code {region_code}")
+            logger.info(f"Found mapping for region code {region_code} from {original_code}")
             return self.region_mappings[region_code]
         
-        logger.warning(f"No mapping found for region code {region_code}")
-        return f"Unknown ({region_code})" 
+        logger.warning(f"No mapping found for region code {region_code} from {original_code}")
+        return f"Unknown ({original_code})" 
