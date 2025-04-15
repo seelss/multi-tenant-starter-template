@@ -45,13 +45,9 @@ class Command(BaseCommand):
                         self.stderr.write(self.style.ERROR("User refused to trust this computer"))
                         process.terminate()
                         return
-                    # Check for pairing dialog
+                    # Check for pairing dialog - only show message when pairing dialog is actually waiting
                     elif 'waiting user pairing dialog' in stderr_line.lower() and not pairing_message_shown:
                         self.stdout.write(self.style.WARNING("Please accept trust pairing on the device..."))
-                        pairing_message_shown = True
-                    # Check for host key creation (which typically happens before pairing)
-                    elif 'creating host key & certificate' in stderr_line.lower() and not pairing_message_shown:
-                        self.stdout.write(self.style.WARNING("Trust pairing will be required, please watch your device..."))
                         pairing_message_shown = True
                     # Check for device not found
                     elif 'device not found' in stderr_line.lower():
@@ -95,8 +91,7 @@ class Command(BaseCommand):
             # Process the output
             if not stdout_str:
                 # Check if it was a pairing initialization that succeeded
-                if ('creating host key & certificate' in stderr_str.lower() or 
-                    'waiting user pairing dialog' in stderr_str.lower()):
+                if 'waiting user pairing dialog' in stderr_str.lower():
                     self.stdout.write(self.style.SUCCESS("Trust pairing has succeeded"))
                     return
                 elif stderr_str:
