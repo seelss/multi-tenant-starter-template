@@ -69,3 +69,16 @@ The admin interface is available at http://127.0.0.1:8000/admin/
 - Implement device-specific diagnostic features
 - Add cloud backend synchronization
 - Package as a desktop application 
+
+
+
+
+
+
+new:
+brew install redis
+./start.sh
+tail -f local_backend/logs/*.log
+redis-server
+or
+brew services start redis
