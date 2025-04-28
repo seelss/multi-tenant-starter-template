@@ -159,6 +159,15 @@ CELERY_TIMEZONE = TIME_ZONE
 # Celery Beat Settings
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
+# Prevent duplicate task executions
+CELERY_ACKS_LATE = True
+CELERY_TASK_REJECT_ON_WORKER_LOST = True
+CELERY_TASK_ACKS_ON_FAILURE_OR_TIMEOUT = False
+
+# Prevent overlapping tasks
+CELERY_WORKER_CONCURRENCY = 1
+CELERY_WORKER_PREFETCH_MULTIPLIER = 1
+
 # Celery Logging Settings - Set higher log level to reduce console output
 CELERYD_HIJACK_ROOT_LOGGER = False
 CELERYD_LOG_LEVEL = 'WARNING'

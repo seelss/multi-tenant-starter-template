@@ -3,7 +3,8 @@ from django.utils import timezone
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from core.events import EventSystem
-from device_connector.device_detection import DEVICE_CONNECTED, DEVICE_DISCONNECTED
+from device_connector.device_detection import DEVICE_CONNECTED, DEVICE_DISCONNECTED, DeviceDetector
+from device_connector.ios_trust_manager import check_ios_trust, TrustStatus
 from .models import DeviceInfo
 from .collectors.factory import DeviceInfoCollectorFactory
 
@@ -23,7 +24,33 @@ class DeviceInfoService:
     @classmethod
     def handle_device_connected(cls, device_info):
         """Handle a device connected event"""
-        logger.info(f"DeviceInfoService: Processing newly connected device {device_info['device_id']}")
+        device_id = device_info['device_id']
+        logger.info(f"DeviceInfoService: Processing newly connected device {device_id}")
+        
+        # For iOS devices, check trust status first
+        if device_info.get('manufacturer', '').lower() == 'apple inc.':
+            trust_status = check_ios_trust(device_id)
+            
+            if trust_status in [TrustStatus.PAIRING_REQUIRED, TrustStatus.TIMEOUT]:
+                logger.info(f"Device {device_id} requires trust from user. Pairing dialog should be visible.")
+                # Add to DeviceDetector's awaiting trust list to prevent re-processing
+                DeviceDetector.awaiting_trust_devices[device_id] = True
+                return
+            
+            if trust_status == TrustStatus.PAIRING_REFUSED:
+                logger.warning(f"User refused to trust device {device_id}")
+                # Remove from awaiting if it was there
+                DeviceDetector.awaiting_trust_devices.pop(device_id, None)
+                return
+                
+            if trust_status == TrustStatus.ERROR or trust_status == TrustStatus.DEVICE_NOT_FOUND:
+                logger.error(f"Error checking trust for device {device_id}: {trust_status}")
+                # Remove from awaiting if it was there
+                DeviceDetector.awaiting_trust_devices.pop(device_id, None) 
+                return
+            
+            # Trust is established, remove from awaiting list if it was there
+            DeviceDetector.awaiting_trust_devices.pop(device_id, None)
         
         # Collect additional information for this device
         cls.collect_device_info(device_info)
@@ -31,8 +58,11 @@ class DeviceInfoService:
     @classmethod
     def handle_device_disconnected(cls, device_info):
         """Handle a device disconnected event"""
-        logger.info(f"DeviceInfoService: Device disconnected {device_info['device_id']}")
-        # We could mark the device info as stale or do other cleanup here
+        device_id = device_info['device_id']
+        logger.info(f"DeviceInfoService: Device disconnected {device_id}")
+        
+        # Remove from awaiting trust if it was there
+        DeviceDetector.awaiting_trust_devices.pop(device_id, None)
     
     @classmethod
     def collect_device_info(cls, device_info):

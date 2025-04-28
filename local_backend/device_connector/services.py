@@ -24,6 +24,9 @@ class DeviceConnectionService:
         """Handle a device connected event by updating the device in the database"""
         logger.info(f"DeviceConnectionService: Processing newly connected device {device_info['device_id']}")
         
+        # Determine device type based on manufacturer
+        device_type = 'ios' if device_info.get('manufacturer', '').lower() == 'apple inc.' else 'other'
+        
         # Update or create device record
         device, created = Device.objects.update_or_create(
             device_id=device_info['device_id'],
@@ -31,6 +34,7 @@ class DeviceConnectionService:
                 'manufacturer': device_info.get('manufacturer', 'Unknown'),
                 'name': device_info.get('name', 'Unknown Device'),
                 'port_location': device_info.get('port_location', ''),
+                'device_type': device_type,
                 'is_connected': True,
                 'last_seen': timezone.now()
             }

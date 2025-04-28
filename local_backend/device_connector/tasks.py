@@ -12,8 +12,11 @@ last_device_state = None
     bind=True,
     soft_time_limit=30,  # 30 second timeout
     max_retries=3,       # Retry up to 3 times
-    rate_limit='5',
-    ignore_result=True   # Prevents task results from being stored and logged
+    rate_limit='1/s',    # Limit to 1 per second
+    ignore_result=True,  # Prevents task results from being stored and logged
+    acks_late=True,      # Acknowledge after execution (prevents duplicate execution)
+    track_started=True,  # Track when tasks are started to help prevent duplicates
+    time_limit=60        # Hard time limit of 60 seconds
 )
 def poll_for_devices(self):
     """

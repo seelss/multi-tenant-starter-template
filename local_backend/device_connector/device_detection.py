@@ -56,9 +56,24 @@ class DeviceDetector:
             logger.error(f"Error extracting device info: {str(e)}")
             return None
     
+    # Track devices awaiting trust - shares access with DeviceInfoService
+    awaiting_trust_devices = {}
+
+    # Track last scan timestamp to prevent celery task overlaps
+    last_scan_time = 0
+    
     @classmethod
     def scan_devices(cls):
         """Scan for all connected USB devices and track in memory"""
+        import time
+        current_time = time.time()
+        
+        # Skip duplicate scans that happen within less than 0.5 seconds
+        # This prevents issues with overlapping celery tasks
+        if current_time - cls.last_scan_time < 0.5:
+            return list(cls.connected_devices.values())
+            
+        cls.last_scan_time = current_time
         currently_connected = {}
         
         # Find all connected devices
@@ -76,8 +91,14 @@ class DeviceDetector:
                             device_id = device_info['device_id']
                             currently_connected[device_id] = device_info
                             
-                            # Check if this is a new device
-                            if device_id not in cls.connected_devices:
+                            # Only emit event if:
+                            # 1. This is a new device
+                            # 2. It's not awaiting trust
+                            # 3. We haven't seen it in the last minute
+                            first_detection = device_id not in cls.connected_devices
+                            not_awaiting_trust = device_id not in cls.awaiting_trust_devices
+                            
+                            if first_detection and not_awaiting_trust:
                                 # Log new device connection with details
                                 logger.info(f"New device connected: {device_info}")
                                 # Emit device connected event
@@ -92,6 +113,8 @@ class DeviceDetector:
                     # Emit device disconnected event
                     EventSystem.publish(DEVICE_DISCONNECTED, disconnected_device)
                     del cls.connected_devices[device_id]
+                    # Remove from awaiting trust if present
+                    cls.awaiting_trust_devices.pop(device_id, None)
             
             # Update connected devices list
             cls.connected_devices = currently_connected
