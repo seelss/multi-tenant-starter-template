@@ -1,7 +1,9 @@
-Django>=3.2.0,<4.0.0
+Django>=4.2.0,<5.0.0
+channels
 pyusb>=1.2.0
 pytz
 celery>=5.2.7
 redis>=4.5.1
 django-celery-beat>=2.5.0 
 pymobiledevice3
+channels_redis
