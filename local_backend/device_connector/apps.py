@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+from django.db.utils import OperationalError
 
 
 class DeviceConnectorConfig(AppConfig):
@@ -11,8 +12,12 @@ class DeviceConnectorConfig(AppConfig):
         from .services import DeviceConnectionService
         from .models import Device
         
-        # Clear all device records on startup
-        Device.objects.all().delete()
+        try:
+            # Clear all device records on startup
+            Device.objects.all().delete()
+        except OperationalError:
+            # If the table doesn't exist yet, that's fine - it will be created by migrations
+            pass
         
         # Initialize the device connection service
         DeviceConnectionService.initialize()
