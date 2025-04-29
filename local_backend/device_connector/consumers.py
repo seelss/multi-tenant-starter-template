@@ -74,10 +74,16 @@ class DeviceConsumer(AsyncWebsocketConsumer):
         """Get a list of all connected devices with their device info"""
         devices = []
         
+        # Import here to avoid circular imports
+        from .device_detection import DeviceDetector
+        
         # Query all connected devices
         connected_devices = Device.objects.filter(is_connected=True)
         
         for device in connected_devices:
+            # Check if device is awaiting trust
+            needs_trust = device.device_id in DeviceDetector.awaiting_trust_devices
+            
             # Get device info if available
             device_data = {
                 'id': device.device_id,
@@ -85,6 +91,7 @@ class DeviceConsumer(AsyncWebsocketConsumer):
                 'status': 'online',
                 'lastConnected': device.last_seen.isoformat(),
                 'model': device.name,
+                'needsTrust': needs_trust,  # Add trust status indicator for frontend
             }
             
             # Try to get additional device info

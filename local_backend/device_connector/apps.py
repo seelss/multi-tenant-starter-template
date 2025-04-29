@@ -11,10 +11,14 @@ class DeviceConnectorConfig(AppConfig):
         # Import here to avoid circular imports
         from .services import DeviceConnectionService
         from .models import Device
+        from .device_detection import DeviceDetector
         
         try:
-            # Clear all device records on startup
-            Device.objects.all().delete()
+            # Mark all devices as disconnected on startup
+            Device.objects.all().update(is_connected=False)
+            
+            # Clear the awaiting_trust_devices dictionary to ensure fresh trust status
+            DeviceDetector.awaiting_trust_devices.clear()
         except OperationalError:
             # If the table doesn't exist yet, that's fine - it will be created by migrations
             pass
